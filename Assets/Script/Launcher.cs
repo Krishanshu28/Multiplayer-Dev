@@ -22,6 +22,8 @@ namespace Com.DefalutCompany.PhotonTest
 
         #region Private Fields
         string gameVersion = "1";
+
+        bool isConnecting;
         #endregion
 
         #region MonoBehaviour Callbacks
@@ -50,7 +52,7 @@ namespace Com.DefalutCompany.PhotonTest
             }
             else
             {
-                PhotonNetwork.ConnectUsingSettings();
+                isConnecting = PhotonNetwork.ConnectUsingSettings();
                 PhotonNetwork.GameVersion = gameVersion;
             }
         }
@@ -59,8 +61,13 @@ namespace Com.DefalutCompany.PhotonTest
         #region MonoBehaviourPunCallbacks Callbacks
         public override void OnConnectedToMaster()
         {
-            print("Connected to master");
-            PhotonNetwork.JoinRandomRoom();
+            if(isConnecting)
+            {
+                
+                PhotonNetwork.JoinRandomRoom();
+                isConnecting=false;
+            }
+            
         }
         public override void OnDisconnected(DisconnectCause cause)
         {
@@ -76,6 +83,15 @@ namespace Com.DefalutCompany.PhotonTest
         public override void OnJoinedRoom()
         {
             Debug.Log("OnJoinedRoom() called");
+
+            //we only load if we are the first player, else we rely on the "PhotonNetwork.AutomaticallySyncScene" to sync are instance scene
+            if(PhotonNetwork.CurrentRoom.PlayerCount == 1)
+            {
+                Debug.Log("We load for 'Room for 1'");
+
+                PhotonNetwork.LoadLevel("Room for 1");
+
+            }
         }
 
 
