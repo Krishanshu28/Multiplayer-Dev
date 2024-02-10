@@ -1261,6 +1261,10 @@
       <Project>{0190B410-6E27-A3DF-7F66-43C9A9E842C2}</Project>
       <Name>Unity.Mathematics</Name>
     </ProjectReference>
+    <ProjectReference Include="URPWizard.csproj">
+      <Project>{66B650E9-F55A-EFC7-244F-3A991535C419}</Project>
+      <Name>URPWizard</Name>
+    </ProjectReference>
     <ProjectReference Include="PhotonUnityNetworking.Demos.csproj">
       <Project>{07D28788-2ED3-F9B2-58B9-B94B80D80283}</Project>
       <Name>PhotonUnityNetworking.Demos</Name>
