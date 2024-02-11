@@ -411,6 +411,7 @@
 "Assets/Script/GameManager.cs"
 "Assets/Script/Launcher.cs"
 "Assets/Script/PlayerAnimationManager.cs"
+"Assets/Script/PlayerManager.cs"
 "Assets/Script/PlayerNameInputField.cs"
 "Assets/UnityTechnologies/StarterAssets/InputSystem/StarterAssetsInputs.cs"
 "Assets/UnityTechnologies/StarterAssets/Mobile/Scripts/CanvasInputs/UICanvasControllerInput.cs"

@@ -28,11 +28,12 @@ namespace Com.DefalutCompany.PhotonTest
             SceneManager.LoadScene(0);
         }
 
-        
+
         #endregion
 
         #region Public Methods
 
+        public static GameManager Instance;
         public void LeaveRoom()
         {
             PhotonNetwork.LeaveRoom();
@@ -41,6 +42,10 @@ namespace Com.DefalutCompany.PhotonTest
         #endregion
 
         #region Private Methods
+        void Start()
+        {
+            Instance = this;
+        }
         void LoadArena()
         {
             if(!PhotonNetwork.IsMasterClient)
