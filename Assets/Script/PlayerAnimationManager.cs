@@ -1,10 +1,11 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Com.DefalutCompany.PhotonTest
 {
-    public class PlayerAnimationManager : MonoBehaviour
+    public class PlayerAnimationManager : MonoBehaviourPun
     {
         private Animator animator;
         #region MonoBehaviour Callbacks
@@ -23,6 +24,10 @@ namespace Com.DefalutCompany.PhotonTest
         // Update is called once per frame
         void Update()
         {
+            if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
+            {
+                return;
+            }
             if(!animator)
             {
                 return;

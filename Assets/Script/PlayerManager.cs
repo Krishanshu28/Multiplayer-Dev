@@ -5,8 +5,9 @@ using System.Collections;
 
 namespace Com.DefalutCompany.PhotonTest
 {
-    public class PlayerManager : MonoBehaviourPunCallbacks
+    public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
     {
+
         [Tooltip("The current health of our player")]
         public float health = 1.0f;
 
@@ -16,7 +17,26 @@ namespace Com.DefalutCompany.PhotonTest
 
         bool isFiring;
         #endregion
+        #region IPunObservable implementation
 
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+            if (stream.IsWriting)
+            {
+                // We own this player: send the others our data
+                stream.SendNext(isFiring);
+                stream.SendNext(health);
+            }
+            else
+            {
+                // Network player, receive data
+                this.isFiring = (bool)stream.ReceiveNext();
+                this.health = (float)stream.ReceiveNext();
+            }
+
+        }
+
+        #endregion
         #region MonoBehaviour Callbacks
 
         private void Awake()
@@ -30,6 +50,22 @@ namespace Com.DefalutCompany.PhotonTest
                 beams.SetActive(false);
             }
         }
+        void Start()
+        {
+            CameraWork _cameraWork = this.gameObject.GetComponent<CameraWork>();
+
+            if (_cameraWork != null)
+            {
+                if (photonView.IsMine)
+                {
+                    _cameraWork.OnStartFollowing();
+                }
+            }
+            else
+            {
+                Debug.LogError("<Color=Red><a>Missing</a></Color> CameraWork Component on playerPrefab.", this);
+            }
+        }
         // Update is called once per frame
         void Update()
         {
@@ -41,9 +77,12 @@ namespace Com.DefalutCompany.PhotonTest
                     GameManager.Instance.LeaveRoom();
                 }
             }
-            // ProcessInputs();
+            if (photonView.IsMine)
+            {
+                ProcessInputs();
+            }
             //trigger Beams active state
-            if(beams != null && isFiring != beams.activeInHierarchy) 
+            if (beams != null && isFiring != beams.activeInHierarchy) 
             {
                 beams.SetActive(isFiring);
             }
