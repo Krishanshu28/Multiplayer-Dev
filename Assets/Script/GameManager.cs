@@ -34,6 +34,9 @@ namespace Com.DefalutCompany.PhotonTest
         #region Public Methods
 
         public static GameManager Instance;
+
+        [Tooltip("The prefab for player")]
+        public GameObject playerPrefab;
         public void LeaveRoom()
         {
             PhotonNetwork.LeaveRoom();
@@ -45,6 +48,24 @@ namespace Com.DefalutCompany.PhotonTest
         void Start()
         {
             Instance = this;
+            if(playerPrefab == null)
+            {
+                Debug.LogError("<Color=Red><a>Missing</a></Color>player Prefab refrence", this);
+            }
+            else
+            {
+                Debug.LogFormat("Instantiating the local Player", Application.loadedLevelName);
+                if (PlayerManager.LocalPlayerInstance == null)
+                {
+                    Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
+                    // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
+                    PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+                }
+                else
+                {
+                    Debug.LogFormat("Ignoring scene load for {0}", SceneManagerHelper.ActiveSceneName);
+                }
+            }
         }
         void LoadArena()
         {

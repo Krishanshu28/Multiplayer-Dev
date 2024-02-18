@@ -2,6 +2,7 @@ using UnityEngine.EventSystems;
 using UnityEngine;
 using Photon.Pun;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 namespace Com.DefalutCompany.PhotonTest
 {
@@ -10,12 +11,18 @@ namespace Com.DefalutCompany.PhotonTest
 
         [Tooltip("The current health of our player")]
         public float health = 1.0f;
+        public static GameObject LocalPlayerInstance;
 
         #region Private Fields
         [SerializeField]
         GameObject beams;
 
         bool isFiring;
+
+        void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode loadingMode)
+        {
+            this.CalledOnLevelWasLoaded(scene.buildIndex);
+        }
         #endregion
         #region IPunObservable implementation
 
@@ -41,6 +48,12 @@ namespace Com.DefalutCompany.PhotonTest
 
         private void Awake()
         {
+            //used in GameManager.cs we keep track of local Player to prevent instantiation when levels are synchronized
+            if(photonView.IsMine)
+            {
+                PlayerManager.LocalPlayerInstance = this.gameObject;
+            }
+            //we flag as don't destroy on load so that instance survives level synchronization
             if(beams == null)
             {
                 Debug.LogError("<Color=Red><a>Missing</a></Color> Beams Reference.", this);
@@ -52,6 +65,7 @@ namespace Com.DefalutCompany.PhotonTest
         }
         void Start()
         {
+           
             CameraWork _cameraWork = this.gameObject.GetComponent<CameraWork>();
 
             if (_cameraWork != null)
@@ -65,6 +79,7 @@ namespace Com.DefalutCompany.PhotonTest
             {
                 Debug.LogError("<Color=Red><a>Missing</a></Color> CameraWork Component on playerPrefab.", this);
             }
+            UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
         }
         // Update is called once per frame
         void Update()
@@ -114,6 +129,14 @@ namespace Com.DefalutCompany.PhotonTest
             health -= 0.1f * Time.deltaTime;
         }
 
+        void CalledOnLevelWasLoaded(int level)
+        {
+            if (!Physics.Raycast(transform.position, -Vector3.up, 5f))
+            {
+                transform.position = new Vector3(0f, 5f, 0f);
+            }
+        }
+
         #endregion
         #region Custom
         void ProcessInputs()
@@ -134,6 +157,12 @@ namespace Com.DefalutCompany.PhotonTest
                 }
 
             }
+        }
+
+        public override void OnDisable()
+        {
+            base.OnDisable();
+            UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
         }
         #endregion
     }
