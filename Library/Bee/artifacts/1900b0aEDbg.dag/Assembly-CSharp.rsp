@@ -413,6 +413,7 @@
 "Assets/Script/PlayerAnimationManager.cs"
 "Assets/Script/PlayerManager.cs"
 "Assets/Script/PlayerNameInputField.cs"
+"Assets/Script/PlayerUI.cs"
 "Assets/UnityTechnologies/StarterAssets/InputSystem/StarterAssetsInputs.cs"
 "Assets/UnityTechnologies/StarterAssets/Mobile/Scripts/CanvasInputs/UICanvasControllerInput.cs"
 "Assets/UnityTechnologies/StarterAssets/Mobile/Scripts/Utilities/MobileDisableAutoSwitchControls.cs"

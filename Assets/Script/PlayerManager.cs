@@ -12,6 +12,8 @@ namespace Com.DefalutCompany.PhotonTest
         [Tooltip("The current health of our player")]
         public float health = 1.0f;
         public static GameObject LocalPlayerInstance;
+        [SerializeField]
+        public GameObject PlayerUiPrefab;
 
         #region Private Fields
         [SerializeField]
@@ -67,7 +69,15 @@ namespace Com.DefalutCompany.PhotonTest
         {
            
             CameraWork _cameraWork = this.gameObject.GetComponent<CameraWork>();
-
+            if(PlayerUiPrefab != null)
+            {
+                GameObject _uiGo = Instantiate(PlayerUiPrefab);
+                _uiGo.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
+            }
+            else
+            {
+                Debug.LogWarning("<Color=Red><a>Missing</a></Color> PlayerUiPrefab reference on player Prefab.", this);
+            }
             if (_cameraWork != null)
             {
                 if (photonView.IsMine)
@@ -131,10 +141,13 @@ namespace Com.DefalutCompany.PhotonTest
 
         void CalledOnLevelWasLoaded(int level)
         {
+            GameObject _uiGo = Instantiate(this.PlayerUiPrefab);
+            _uiGo.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
             if (!Physics.Raycast(transform.position, -Vector3.up, 5f))
             {
                 transform.position = new Vector3(0f, 5f, 0f);
             }
+
         }
 
         #endregion
